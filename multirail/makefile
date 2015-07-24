@@ -27,3 +27,8 @@ ring4:   ring4.v
 	$(TOOL) -o ring4 $(NCLLIB) ring4.v
 	$(SIM) ring4
 
+# four rail ring feeding four rail pipeline
+ring4pipe4:   ring4pipe4.v
+	$(TOOL) -o ring4pipe4 $(NCLLIB) ring4gen.v ring4pipe4.v
+	$(SIM) ring4pipe4
+

@@ -9,10 +9,7 @@
 
 module ring2;
 
-wire [1:0] A;
-wire [1:0] B;
-wire [1:0] C;
-wire [1:0] D;
+wire [1:0] A, B, C, D;
 wire ACOMP, BCOMP, CCOMP, DCOMP;
   /* Make an init that pulses once. */
   reg init = 0;

@@ -9,11 +9,7 @@
 
 module pipeline2;
 
-wire [1:0] A;
-wire [1:0] B;
-wire [1:0] C;
-wire [1:0] D;
-wire [1:0] E;
+wire [1:0] A, B, C, D, E;
 wire ACOMP, BCOMP, CCOMP, DCOMP, ECOMP;
   /* Make an init that pulses once. */
   reg init = 0;
