@@ -14,3 +14,7 @@ fanoutfanin:  fanoutfanin1.v
 	$(TOOL) -o fanoutfanin1 $(NCLLIB) fanoutfanin1.v
 	$(SIM) fanoutfanin1
 
+fanoutfan:  fanoutfan1.v
+	$(TOOL) -o fanoutfan1 $(NCLLIB) fanoutfan1.v
+	$(SIM) fanoutfan1
+
