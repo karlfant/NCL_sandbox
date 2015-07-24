@@ -1,5 +1,5 @@
 TOOL=iverilog
-SIM=VVP
+SIM=VVP -n
 NCLLIB=../common/NCL_LIB.v
 
 # single rail four oscillation pipeline structure

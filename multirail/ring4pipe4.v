@@ -27,7 +27,7 @@ initial
 /////////////////////////////
 ///// Circuit Under Test
 
-// 4 rail ring producing A input for pipeline
+// 4 rail ring producing 4 rail output
 ring4gen TB1 (A[3:0], ACOMP, init);
 
 // 4 rail rail pipeline receiving A flow from ring
