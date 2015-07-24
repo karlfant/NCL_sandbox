@@ -19,13 +19,11 @@ wire ACOMP, BCOMP, CCOMP, DCOMP;
      # 1 init = 1;
      # 20 init = 0;
      # 1000 $stop;
-
   end
 initial
  begin
     $dumpfile("ring1.vcd");
     $dumpvars(0,ring1);
-    
  end
 
 ///// Testbench
