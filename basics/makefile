@@ -13,7 +13,7 @@ ring1:   ring1.v
 	$(SIM) ring1
 
 # single rail fanout-fanin pipeline structure
-fanoutfanin:  fanoutfanin1.v
+fanoutfanin1:  fanoutfanin1.v
 	$(TOOL) -o fanoutfanin1 $(NCLLIB) fanoutfanin1.v
 	$(SIM) fanoutfanin1
 

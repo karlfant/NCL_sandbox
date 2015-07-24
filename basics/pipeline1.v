@@ -39,9 +39,8 @@ assign ECOMP = E;  // auto consume E output
 endmodule
 
 module Pipecomponent(output Z, input ZCOMP, input A, output ACOMP, input init);
-wire t0, enable;
+wire  enable;
 THnotN  u0(enable, ZCOMP, init);
-TH22  u1(t0, A, enable);
-assign Z = t0;
-assign ACOMP = t0;
+TH22  u1(Z, A, enable);
+assign ACOMP = Z;
 endmodule

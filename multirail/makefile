@@ -2,18 +2,28 @@ TOOL=iverilog
 SIM=VVP
 NCLLIB=../common/NCL_LIB.v
 
-# single rail four oscillation pipeline structure
-pipeline1:  pipeline1.v
-	$(TOOL) -o pipeline1 $(NCLLIB) pipeline1.v
-	$(SIM) pipeline1
+# two rail four oscillation pipeline structure
+pipeline2:  pipeline2.v
+	$(TOOL) -o pipeline2 $(NCLLIB) pipeline2.v
+	$(SIM) pipeline2
 
-# single rail four oscillation pipeline ring structure
-ring1:   ring1.v
-	$(TOOL) -o ring1 $(NCLLIB) ring1.v
-	$(SIM) ring1
+# four rail four oscillation pipeline structure
+pipeline4:  pipeline4.v
+	$(TOOL) -o pipeline4 $(NCLLIB) pipeline4.v
+	$(SIM) pipeline4
 
-# single rail fanout-fanin pipeline structure
-fanoutfanin:  fanoutfanin1.v
-	$(TOOL) -o fanoutfanin1 $(NCLLIB) fanoutfanin1.v
-	$(SIM) fanoutfanin1
+# two rail four oscillation pipeline ring structure
+ring2:   ring2.v
+	$(TOOL) -o ring2 $(NCLLIB) ring2.v
+	$(SIM) ring2
+
+# three rail four oscillation pipeline ring structure
+ring3:   ring3.v
+	$(TOOL) -o ring3 $(NCLLIB) ring3.v
+	$(SIM) ring3
+
+# four rail four oscillation pipeline ring structure
+ring4:   ring4.v
+	$(TOOL) -o ring4 $(NCLLIB) ring4.v
+	$(SIM) ring4
 
