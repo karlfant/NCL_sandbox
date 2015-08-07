@@ -6,15 +6,11 @@
 
 `timescale 10ps / 1ps
 
-
 module ring2;
 
-wire [1:0] A, B, C, D;
-wire ACOMP, BCOMP, CCOMP, DCOMP;
-  /* Make an init that pulses once. */
-  reg init = 0;
+ /* Make an init that pulses once. */
+  reg init = 1;
   initial begin
-     # 0 init = 1;
      # 20 init = 0;
      # 1000 $stop;
   end
@@ -28,6 +24,8 @@ initial
 /////////////////////////////
 ///// Circuit Under Test
 
+wire [1:0] A, B, C, D;
+wire ACOMP, BCOMP, CCOMP, DCOMP;
 // 2 rail 4 oscillation ring
 PipecomponentN u1(B, BCOMP, A, ACOMP, init);
 Pipecomponent u2(C, CCOMP, B, BCOMP, init);

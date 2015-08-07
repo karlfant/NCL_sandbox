@@ -6,15 +6,13 @@
 
 `timescale 10ps / 1ps
 
-
 module ring4;
 
 wire [3:0] A, B, C, D;
 wire ACOMP, BCOMP, CCOMP, DCOMP;
   /* Make an init that pulses once. */
-  reg init = 0;
+  reg init = 1;
   initial begin
-     # 0 init = 1;
      # 20 init = 0;
      # 1000 $stop;
   end

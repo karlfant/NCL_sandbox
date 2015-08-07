@@ -9,12 +9,9 @@
 
 module pipeline2;
 
-wire [1:0] A, B, C, D, E;
-wire ACOMP, BCOMP, CCOMP, DCOMP, ECOMP;
-  /* Make an init that pulses once. */
-  reg init = 0;
+ /* Make an init that pulses once. */
+  reg init = 1;
   initial begin
-     # 0 init = 1;
      # 20 init = 0;
      # 1000 $stop;
   end
@@ -27,6 +24,9 @@ initial
 ///// Testbench
 /////////////////////////////
 ///// Circuit Under Test
+
+wire [1:0] A, B, C, D, E;
+wire ACOMP, BCOMP, CCOMP, DCOMP, ECOMP;
 
 // 2 rail 4 oscillation pipeline
 THnotN  A0(A[0], ACOMP, init); // auto produce A input
@@ -46,6 +46,5 @@ THnotN  u0(enable, ZCOMP, init);
 TH22  u1(Z[0], A[0], enable);
 TH22  u2(Z[1], A[1], enable);
 TH12 u5 (ACOMP, Z[0], Z[1]);
-//assign ACOMP = ACOMPtemp;
 endmodule
 

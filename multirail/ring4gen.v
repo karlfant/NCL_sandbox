@@ -6,7 +6,6 @@
 
 `timescale 10ps / 1ps
 
-
 module ring4gen (output wire [3:0] out, input outCOMP, input init);
 wire [3:0] A, B, C, D;
 wire ACOMP, BCOMP, CCOMP, DCOMP, CCOMP2;

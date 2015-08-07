@@ -8,12 +8,9 @@
 
 module ring4pipe4;
 
-wire [3:0] A, B, C, D, E;
-wire ACOMP, BCOMP, CCOMP, DCOMP, ECOMP;
-  /* Make an init that pulses once. */
-  reg init = 0;
+ /* Make an init that pulses once. */
+  reg init = 1;
   initial begin
-     # 0 init = 1;
      # 200 init = 0;
      # 2000 $stop;
   end
@@ -26,6 +23,9 @@ initial
 ///// Testbench
 /////////////////////////////
 ///// Circuit Under Test
+
+wire [3:0] A, B, C, D, E;
+wire ACOMP, BCOMP, CCOMP, DCOMP, ECOMP;
 
 // 4 rail ring producing 4 rail output
 ring4gen TB1 (A[3:0], ACOMP, init);

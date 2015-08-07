@@ -6,15 +6,11 @@
 
 `timescale 10ps / 1ps
 
-
 module pipeline4;
 
-wire [3:0] A, B, C, D, E;
-wire ACOMP, BCOMP, CCOMP, DCOMP, ECOMP;
-  /* Make an init that pulses once. */
-  reg init = 0;
+ /* Make an init that pulses once. */
+  reg init = 1;
   initial begin
-     # 0 init = 1;
      # 20 init = 0;
      # 1000 $stop;
   end
@@ -28,6 +24,8 @@ initial
 /////////////////////////////
 ///// Circuit Under Test
 
+wire [3:0] A, B, C, D, E;
+wire ACOMP, BCOMP, CCOMP, DCOMP, ECOMP;
 // 4 rail 4 oscillation pipeline
 THnotN  A0(A[0], ACOMP, init); // auto produce A input
 assign A[1] = 0;  // auto produce constant rails
