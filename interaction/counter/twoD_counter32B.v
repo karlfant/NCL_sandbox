@@ -5,7 +5,7 @@
 /////////////////////////////
 `timescale 10ps / 1ps
 
-module twoD_counter32;
+module twoD_counter32B;
 
  /* Make an init that pulses once. */
   reg init = 1;
@@ -15,8 +15,8 @@ module twoD_counter32;
   end
 initial
  begin
-    $dumpfile("twoD_counter32.vcd");
-    $dumpvars(0, twoD_counter32);
+    $dumpfile("twoD_counter32B.vcd");
+    $dumpvars(0, twoD_counter32B);
  end
 
 ////// test bench

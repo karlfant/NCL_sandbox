@@ -21,12 +21,12 @@ initial
  end
 
 wire [3:0] quatout;
-wire [2:0] triin;
-wire [1:0] biin;
+wire [2:0] trinary;
+wire [1:0] binary;
 wire quatcomp;
 
-ring3gen TB1 (triin[2:0], quatcomp, init);
-ring2gen TB2 (biin[1:0], quatcomp, init);
+ring3gen TB1 (trinary[2:0], quatcomp, init);
+ring2gen TB2 (binary[1:0], quatcomp, init);
 
 ////// test bench
 //////////////////////////////
@@ -36,15 +36,15 @@ ring2gen TB2 (biin[1:0], quatcomp, init);
 wire [1:0] temp;
 
 // combinational logic
-THXOR  u1(temp[0], biin[0], triin[1], biin[1], triin[0]);
-THXOR  u2(temp[1], biin[0], triin[2], biin[1], triin[1]);
+THXOR  u1(temp[0], binary[0], trinary[1], binary[1], trinary[0]);
+THXOR  u2(temp[1], binary[0], trinary[2], binary[1], trinary[1]);
 
 // output link for quat
 THnotN  o0(quatenable, quatcomp, init);
-TH33  o1(quatout[0], biin[0], triin[0], quatenable);
+TH33  o1(quatout[0], binary[0], trinary[0], quatenable);
 TH22  o2(quatout[1], quatenable, temp[0]);
 TH22  o3(quatout[2], quatenable, temp[1]);
-TH33  o4(quatout[3], biin[1], triin[2], quatenable);
+TH33  o4(quatout[3], binary[1], trinary[2], quatenable);
 
 ////// circuit under test
 //////////////////////////////
