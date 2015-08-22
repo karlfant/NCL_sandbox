@@ -1,5 +1,5 @@
 $date
-	Sat Aug  8 19:14:34 2015
+	Fri Aug 21 14:22:22 2015
 $end
 $version
 	Icarus Verilog
@@ -7,7 +7,7 @@ $end
 $timescale
 	1ps
 $end
-$scope module twoD_counter32 $end
+$scope module twoD_counter32B $end
 $var wire 33 ! countcomp [32:0] $end
 $var wire 64 " displaysum [63:0] $end
 $var wire 32 # sumcomp [31:0] $end
