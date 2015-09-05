@@ -13,7 +13,7 @@ wire [1:0] B;
 wire [1:0] C;
 wire [1:0] D;
 wire [1:0] sum;
-wire ACOMP, BCOMP, BCOMP2, CCOMP, DCOMP, carryCOMPtemp;
+wire ACOMP, BCOMP, BCOMP2, CCOMP, DCOMP;
 
 // 4 stage ring with halfadder
 
@@ -54,7 +54,7 @@ endmodule
 
 // the halfadder with out null carry blocking
 module halfadd(output [1:0] sum, output [1:0] carryout, input [1:0] A, input [1:0] carryin);
-wire enable, sumCOMP, carryCOMP, haCOMPtemp;
+wire sumCOMP, carryCOMP;
 THXOR  u1(sum[0], A[0], carryin[0], A[1], carryin[1]);
 THXOR  u2(sum[1], A[1], carryin[0], A[0], carryin[1]);
 TH22  u3(carryout[1], A[1], carryin[1]);

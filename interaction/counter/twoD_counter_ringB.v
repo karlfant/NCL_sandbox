@@ -12,7 +12,7 @@ wire [1:0] A;
 wire [1:0] B;
 wire [1:0] C;
 wire [1:0] D;
-wire ACOMP, BCOMP, CCOMP, DCOMP, CCOMP2, carryCOMPtemp;
+wire ACOMP, BCOMP, CCOMP, DCOMP, CCOMP2;
 
 
 // 4 stage ring with halfadder

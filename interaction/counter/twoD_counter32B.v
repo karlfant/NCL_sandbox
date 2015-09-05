@@ -23,7 +23,6 @@ initial
 //////////////////////////////
 ////// circuit under test
 
-wire carrycomp;
 wire [32:0] countcomp;
 wire [31:0] sumcomp;
 wire [1:0] sum [31:0];
