@@ -13,7 +13,7 @@ module twoD_adder32A;
   reg init = 1;
   reg test = 0;
   initial begin
-     # 3500 init = 0;
+     # 10000 init = 0;
      # 200000 $stop;
   end
 initial
@@ -397,7 +397,7 @@ wire [31:0] Acomp, Bcomp;
 
 //build A input buffer close with file read
 for (i=0; i<32; i=i+1) begin
-THnotN  tbb3(Aenable[i], sumcarrycomp[i], init);
+THnotN  tbb3(Aenable[i], sumcarryCOMP[i], init);
 TH22N  ob4 (Ain[i][0], fileA[i][0], Aenable[i], init);
 TH22N  ob5 (Ain[i][1], fileA[i][1], Aenable[i], init);
 TH12 u11 (Acomp[i], Ain[i][1], Ain[i][0]);  // auto consume sum
@@ -405,7 +405,7 @@ end
 
 //build B input buffer close with file read
 for (i=0; i<32; i=i+1) begin
-THnotN  tbb2(Benable[i], sumcarrycomp[i], init);
+THnotN  tbb2(Benable[i], sumcarryCOMP[i], init);
 TH22N  ob2 (Bin[i][0], fileB[i][0], Benable[i], init);
 TH22N  ob3 (Bin[i][1], fileB[i][1], Benable[i], init);
 TH12 u10 (Bcomp[i], Bin[i][1], Bin[i][0]);  // auto consume sum
@@ -415,30 +415,19 @@ end
 /////////////////////////////
 ///// Circuit Under Test
 
-
 wire [1:0] sum [31:0];
 wire [1:0] carry [32:0];
-wire [1:0] carryin [32:0];
-wire [32:1] carrycomp;
-wire [31:1] carryenable;
+wire [32:0] sumcarryCOMP;
 
 // 32 bit ripple carry adder
-THnotN  u0(carryin[0][0], sumcarrycomp[0], init); // auto produce carryin
-assign carryin[0][1] = 1'b0; // auto produce carryin
+THnotN  u0(carry[0][0], sumcarryCOMP[0], init); // auto produce carryin
+assign carry[0][1] = 1'b0; // auto produce carryin
 
 // bits 0 through 31 add
 for (i=0; i<32; i=i+1) begin
-  fulladdA ci (sum[i][1:0], carry[i][1:0], Ain[i][1:0], Bin[i][1:0], carryin[i][1:0]);
+  fulladdA ci (sum[i][1:0], sumcomp[i], carry[i+1][1:0], sumcarryCOMP[i+1], Ain[i][1:0], Bin[i][1:0], carry[i][1:0], sumcarryCOMP[i], init);
 end
-TH12 u3 (sumcarrycomp[0], sumcomp[0], carrycomp[1]);  // auto consume sum
-for (i=1; i<32; i=i+1) begin
-THnotN  u0(carryenable[i], sumcarrycomp[i], init); // auto produce carryin
-TH22  ob8 (carryin[i][0], carry[i-1][0], carryenable[i]);
-TH22  ob9 (carryin[i][1], carry[i-1][1], carryenable[i]);
-TH12 u8 (carrycomp[i], carryin[i][1], carryin[i][0]);  
-TH22 u9 (sumcarrycomp[i], sumcomp[i], carrycomp[i+1]);  // ha closure
-end
-TH12 u18 (carrycomp[32], carry[31][1], carry[31][0]);  // auto consume carrry
+TH12 u18 (sumcarryCOMP[32], carry[32][1], carry[32][0]);  // auto consume carrry
 
 ///// Circuit Under Test
 //////////////////////////////
@@ -447,7 +436,6 @@ TH12 u18 (carrycomp[32], carry[31][1], carry[31][0]);  // auto consume carrry
 //wire carrycomp;
 wire [31:0] sumcomp;
 wire [31:0] testenable;
-wire [32:0] sumcarrycomp;
 wire [1:0] sumout [31:0];
 //build output buffer close with input buffer
 
@@ -457,7 +445,6 @@ TH22  ob0 (sumout[i][0], sum[i][0], testenable[i]);
 TH22  ob1 (sumout[i][1], sum[i][1], testenable[i]);
 TH12 u3 (sumcomp[i], sumout[i][1], sumout[i][0]);  // auto consume sum
 end
-TH12 u4 (sumcarrycomp[32], carry[31][0], carry[31][1]);  // auto consume sum
 
 wire [63:0] displaysum;
 for (i=0; i<32; i=i+1) begin

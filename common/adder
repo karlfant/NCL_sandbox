@@ -1,0 +1,7 @@
+module Iadd32(A, ACOMP, B, BCOMP, carryin, carryinCOMP, sum, sumCOMP, carryout, carryoutCOMP, init)
+
+CAN'T PASS ARRAYS THROUGH A MODULE INTERFACE!!!
+
+for (i=0; i<32; i=i+1) begin
+  fulladd ci (sum[i][1:0], sumcarrycompin[i], carry[i+1][1:0], Ain[i][1:0], Bin[i][1:0], carry[i][1:0], sumcarrycompout[i], init);
+end
