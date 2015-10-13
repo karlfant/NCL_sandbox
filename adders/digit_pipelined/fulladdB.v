@@ -1,6 +1,6 @@
 `timescale 10ps / 1ps
 
-module fulladdA(output [1:0] sum, input sumCOMP, output [1:0] carryout, input [1:0] A, input [1:0] B, input [1:0] carryin, output sumcarryCOMP, input init);
+module fulladdA(output [1:0] sum, input sumCOMP, output [1:0] carryout,input carryoutCOMP, input [1:0] A, input [1:0] B, output sumcarryCOMP, input [1:0] carryin, output carryinCOMP, input init);
 wire [1:0] temp, carrytemp;
 
 // the fullfadder
@@ -21,5 +21,7 @@ THnotN  tbb3(Senable, sumCOMP, init);
 TH22  ob4 (sum[0], Ts[0], Senable);
 TH22  ob5 (sum[1], Ts[1], Senable);
 // closure
-TH12 u21 (sumcarryCOMP, sum[1], sum[0]);  
+//TH12 u21 (sumcarryCOMP, sum[1], sum[0]);  
+TH12 u21 (carryinCOMP, sum[1], sum[0]);  
+TH22 u22 (sumcarryCOMP, carryoutCOMP, carryinCOMP);
 endmodule

@@ -5,7 +5,7 @@
 /////////////////////////////
 `timescale 10ps / 1ps
 
-module fulladdQ(output [3:0] sumQ, input sumCOMP, output [1:0] carryout, input [3:0] AQ, input [3:0] BQ, input [1:0] carryin, output sumcarryCOMP, input init);
+module fulladdQ(output [3:0] sumQ, input sumCOMP, output [1:0] carryout,input carryoutCOMP, input [3:0] AQ, input [3:0] BQ, output sumcarryCOMP, input [1:0] carryin, output carryinCOMP, input init);
  
 // 2 halfadder full adder
 wire Senable, Cenable, sumQCOMP;
@@ -54,7 +54,8 @@ TH22  link0 (sumQ[0], Ts[0], Senable);
 TH22  link1 (sumQ[1], Ts[1], Senable);
 TH22  link2 (sumQ[2], Ts[2], Senable);
 TH22  link3 (sumQ[3], Ts[3], Senable);
-TH14 u10 (sumcarryCOMP, sumQ[1], sumQ[0], sumQ[2], sumQ[3]);  // auto consume sum
+TH14 u10 (carryinCOMP, sumQ[1], sumQ[0], sumQ[2], sumQ[3]);  // auto consume sum
+TH22 u22 (sumcarryCOMP, carryoutCOMP, carryinCOMP);
 // carry link
 //THnotN  tbb4(Cenable, carryCOMP, init);
 //TH22  link4 (carryout[0], Tc[0], Cenable);

@@ -422,83 +422,86 @@ wire [1:0] Um [31:0];
 wire [1:0] Vm [31:0];
 wire [3:0] steer [32:0];
 wire [1:0] carry [32:0];
-wire [32:0] sumcarryCOMP, steerCOMP;
+wire [31:0] sumcarryCOMP;
+wire [32:0] steerCOMP;
 wire [32:0] SCOMP, TCOMP, UCOMP, VCOMP;
 
-// 32 bit ripple carry adder
+//  generate steer
 //THnotN  u0(carry[0][0], sumcarryCOMP[0], init); // auto produce carryin
 //assign carry[0][1] = 1'b0; // auto produce carryin
 bitriquatC r5 ( steer[0][3:0], steerCOMP[0], init);
 
-// bits 0 through 31 add
+// bits 0 through 31 steer
 for (i=0; i<32; i=i+1) begin
   steerA ci (Sm[i][1:0], Scomp[i], Tm[i][1:0], Tcomp[i], Um[i][1:0], Ucomp[i], Vm[i][1:0], Vcomp[i], Ain[i][1:0], sumcarryCOMP[i], steer[i][3:0], steerCOMP[i], steer[i+1][3:0], steerCOMP[i+1], init);
 end
-TH14 u18 (sumcarryCOMP[32], steer[32][1], steer[32][0], steer[32][2], steer[32][3]);  // auto consume carrry
 TH14 u19 (steerCOMP[32], steer[32][1], steer[32][0], steer[32][2], steer[32][3]);  // auto consume carrry
 
-///// Circuit Under Test
-//////////////////////////////
-////// test bench output
 
-//wire carrycomp;
 wire [31:0] Scomp;
 wire [31:0] Senable;
 wire [1:0] Sout [31:0];
 //build output buffer for S with auto consume
 for (i=0; i<32; i=i+1) begin
-THnotN  u0(Senable[i], Scomp[i], init); // auto produce carryin
+THnotN  u0(Senable[i], sumcomp[i], init); // auto produce carryin
 TH22  ob0 (Sout[i][0], Sm[i][0], Senable[i]);
 TH22  ob1 (Sout[i][1], Sm[i][1], Senable[i]);
 TH12 u3 (Scomp[i], Sout[i][1], Sout[i][0]);  // auto consume sum
 end
 
-//wire carrycomp;
 wire [31:0] Tcomp;
 wire [31:0] Tenable;
 wire [1:0] Tout [31:0];
 //build output buffer for T with auto consume
 for (i=0; i<32; i=i+1) begin
-THnotN  u0(Tenable[i], Tcomp[i], init); // auto produce carryin
+THnotN  u0(Tenable[i], sumcomp[i], init); // auto produce carryin
 TH22  ob0 (Tout[i][0], Tm[i][0], Tenable[i]);
 TH22  ob1 (Tout[i][1], Tm[i][1], Tenable[i]);
 TH12 u3 (Tcomp[i], Tout[i][1], Tout[i][0]);  // auto consume sum
 end
 
-//wire carrycomp;
 wire [31:0] Ucomp;
 wire [31:0] Uenable;
 wire [1:0] Uout [31:0];
 //build output buffer for U with auto consume
 for (i=0; i<32; i=i+1) begin
-THnotN  u0(Uenable[i], Ucomp[i], init); // auto produce carryin
+THnotN  u0(Uenable[i], sumcomp[i], init); // auto produce carryin
 TH22  ob0 (Uout[i][0], Um[i][0], Uenable[i]);
 TH22  ob1 (Uout[i][1], Um[i][1], Uenable[i]);
 TH12 u3 (Ucomp[i], Uout[i][1], Uout[i][0]);  // auto consume sum
 end
 
-//wire carrycomp;
 wire [31:0] Vcomp;
 wire [31:0] Venable;
 wire [1:0] Vout [31:0];
 //build output buffer for V with auto consume
 for (i=0; i<32; i=i+1) begin
-THnotN  u0(Venable[i], Vcomp[i], init); // auto produce carryin
+THnotN  u0(Venable[i], sumcomp[i], init); // auto produce carryin
 TH22  ob0 (Vout[i][0], Vm[i][0], Venable[i]);
 TH22  ob1 (Vout[i][1], Vm[i][1], Venable[i]);
 TH12 u3 (Vcomp[i], Vout[i][1], Vout[i][0]);  // auto consume sum
 end
-/*
- carrycomp;
+
+///// Circuit Under Test
+//////////////////////////////
+////// test bench output
+
+
 wire [31:0] sumcomp;
 wire [31:0] testenable;
 wire [1:0] sumout [31:0];
+wire [1:0] sum [31:0];
+wire [1:0] Acheck [31:0];
 //build output buffer close with input buffer
 
 for (i=0; i<32; i=i+1) begin
 THnotN  u0(testenable[i], sumcomp[i], init); // auto produce carryin
+TH14 ck800 (sum[i][1], Sout[i][1], Tout[i][1], Uout[i][1], Vout[i][1]);
+TH14 ck801 (sum[i][0], Sout[i][0], Tout[i][0], Uout[i][0], Vout[i][0]);
 TH22  ob0 (sumout[i][0], sum[i][0], testenable[i]);
 TH22  ob1 (sumout[i][1], sum[i][1], testenable[i]);
+TH22  ob02 (Acheck[i][0], Ain[i][0], Oenable);
+TH22  ob03 (Acheck[i][1], Ain[i][1], Oenable);
 TH12 u3 (sumcomp[i], sumout[i][1], sumout[i][0]);  // auto consume sum
 end
 
@@ -511,7 +514,7 @@ end
 // test against output file
 always @(posedge sumcomp[0] & !init) begin
   check = $fscanf (Soutdata[0], "%h", filesum[0][1:0]); 
-if(sumout[0] != filesum[0]) begin
+if(sumout[0] != Acheck[0]) begin
   $display( "00 fail result ox%h  expected 0x%h", sumout[0] ,filesum[0]);
   test = 1;
 end
@@ -521,7 +524,7 @@ filesum[0][1:0] = 0; end
 
 always @(posedge sumcomp[1] & !init) begin
   check = $fscanf (Soutdata[1], "%h", filesum[1][1:0]);
-if(sumout[1] != filesum[1]) begin
+if(sumout[1] != Acheck[1]) begin
   $display( "01 fail result ox%h  expected 0x%h", sumout[1] ,filesum[1]);
   test = 1;
 end
@@ -531,7 +534,7 @@ filesum[1][1:0] = 0; end
 
 always @(posedge sumcomp[2] & !init) begin
   check = $fscanf (Soutdata[2], "%h", filesum[2][1:0]);
-if(sumout[2] != filesum[2]) begin
+if(sumout[2] != Acheck[2]) begin
   $display( "02 fail result ox%h  expected 0x%h", sumout[2] ,filesum[2]);
   test = 1;
 end
@@ -541,7 +544,7 @@ filesum[2][1:0] = 0; end
 
 always @(posedge sumcomp[3] & !init) begin
   check = $fscanf (Soutdata[3], "%h", filesum[3][1:0]);
-if(sumout[3] != filesum[3]) begin
+if(sumout[3] != Acheck[3]) begin
   $display( "03 fail result ox%h  expected 0x%h", sumout[3] ,filesum[3]);
   test = 1;
 end
@@ -551,7 +554,7 @@ filesum[3][1:0] = 0; end
 
 always @(posedge sumcomp[4] & !init) begin
   check = $fscanf (Soutdata[4], "%h", filesum[4][1:0]);
-if(sumout[4] != filesum[4]) begin
+if(sumout[4] != Acheck[4]) begin
   $display( "04 fail result ox%h  expected 0x%h", sumout[4] ,filesum[4]);
   test = 1;
 end
@@ -561,7 +564,7 @@ filesum[4][1:0] = 0; end
 
 always @(posedge sumcomp[5] & !init) begin
   check = $fscanf (Soutdata[5], "%h", filesum[5][1:0]);
-if(sumout[5] != filesum[5]) begin
+if(sumout[5] != Acheck[5]) begin
   $display( "05 fail result ox%h  expected 0x%h", sumout[5] ,filesum[5]);
   test = 1;
 end
@@ -571,7 +574,7 @@ filesum[5][1:0] = 0; end
 
 always @(posedge sumcomp[6] & !init) begin
   check = $fscanf (Soutdata[6], "%h", filesum[6][1:0]);
-if(sumout[6] != filesum[6]) begin
+if(sumout[6] != Acheck[6]) begin
   $display( "06 fail result ox%h  expected 0x%h", sumout[6] ,filesum[6]);
   test = 1;
 end
@@ -581,7 +584,7 @@ filesum[6][1:0] = 0; end
 
 always @(posedge sumcomp[7] & !init) begin
   check = $fscanf (Soutdata[7], "%h", filesum[7][1:0]);
-if(sumout[7] != filesum[7]) begin
+if(sumout[7] != Acheck[7]) begin
   $display( "07 fail result ox%h  expected 0x%h", sumout[7] ,filesum[7]);
   test = 1;
 end
@@ -591,7 +594,7 @@ filesum[7][1:0] = 0; end
 
 always @(posedge sumcomp[8] & !init) begin
   check = $fscanf (Soutdata[8], "%h", filesum[8][1:0]);
-if(sumout[8] != filesum[8]) begin
+if(sumout[8] != Acheck[8]) begin
   $display( "08 fail result ox%h  expected 0x%h", sumout[8] ,filesum[8]);
   test = 1;
 end
@@ -601,7 +604,7 @@ filesum[8][1:0] = 0; end
 
 always @(posedge sumcomp[9] & !init) begin
   check = $fscanf (Soutdata[9], "%h", filesum[9][1:0]);
-if(sumout[9] != filesum[9]) begin
+if(sumout[9] != Acheck[9]) begin
   $display( "09 fail result ox%h  expected 0x%h", sumout[9] ,filesum[9]);
   test = 1;
 end
@@ -611,7 +614,7 @@ filesum[9][1:0] = 0; end
 
 always @(posedge sumcomp[10] & !init) begin
   check = $fscanf (Soutdata[10], "%h", filesum[10][1:0]);
-if(sumout[10] != filesum[10]) begin
+if(sumout[10] != Acheck[10]) begin
   $display( "10 fail result ox%h  expected 0x%h", sumout[10] ,filesum[10]);
   test = 1;
 end
@@ -621,7 +624,7 @@ filesum[10][1:0] = 0; end
 
 always @(posedge sumcomp[11] & !init) begin
   check = $fscanf (Soutdata[11], "%h", filesum[11][1:0]);
-if(sumout[11] != filesum[11]) begin
+if(sumout[11] != Acheck[11]) begin
   $display( "11 fail result ox%h  expected 0x%h", sumout[11] ,filesum[11]);
   test = 1;
 end
@@ -631,7 +634,7 @@ filesum[11][1:0] = 0; end
 
 always @(posedge sumcomp[12] & !init) begin
   check = $fscanf (Soutdata[12], "%h", filesum[12][1:0]);
-if(sumout[12] != filesum[12]) begin
+if(sumout[12] != Acheck[12]) begin
   $display( "12 fail result ox%h  expected 0x%h", sumout[12] ,filesum[12]);
   test = 1;
 end
@@ -641,7 +644,7 @@ filesum[12][1:0] = 0; end
 
 always @(posedge sumcomp[13] & !init) begin
   check = $fscanf (Soutdata[13], "%h", filesum[13][1:0]);
-if(sumout[13] != filesum[13]) begin
+if(sumout[13] != Acheck[13]) begin
   $display( "13 fail result ox%h  expected 0x%h", sumout[13] ,filesum[13]);
   test = 1;
 end
@@ -651,7 +654,7 @@ filesum[13][1:0] = 0; end
 
 always @(posedge sumcomp[14] & !init) begin
   check = $fscanf (Soutdata[14], "%h", filesum[14][1:0]);
-if(sumout[14] != filesum[14]) begin
+if(sumout[14] != Acheck[14]) begin
   $display( "14 fail result ox%h  expected 0x%h", sumout[14] ,filesum[14]);
   test = 1;
 end
@@ -661,7 +664,7 @@ filesum[14][1:0] = 0; end
 
 always @(posedge sumcomp[15] & !init) begin
   check = $fscanf (Soutdata[15], "%h", filesum[15][1:0]);
-if(sumout[15] != filesum[15]) begin
+if(sumout[15] != Acheck[15]) begin
   $display( "15 fail result ox%h  expected 0x%h", sumout[15] ,filesum[15]);
   test = 1;
 end
@@ -671,7 +674,7 @@ filesum[15][1:0] = 0; end
 
 always @(posedge sumcomp[16] & !init) begin
   check = $fscanf (Soutdata[16], "%h", filesum[16][1:0]);
-if(sumout[16] != filesum[16]) begin
+if(sumout[16] != Acheck[16]) begin
   $display( "16 fail result ox%h  expected 0x%h", sumout[16] ,filesum[16]);
   test = 1;
 end
@@ -681,7 +684,7 @@ filesum[16][1:0] = 0; end
 
 always @(posedge sumcomp[17] & !init) begin
   check = $fscanf (Soutdata[17], "%h", filesum[17][1:0]);
-if(sumout[17] != filesum[17]) begin
+if(sumout[17] != Acheck[17]) begin
   $display( "17 fail result ox%h  expected 0x%h", sumout[17] ,filesum[17]);
   test = 1;
 end
@@ -691,7 +694,7 @@ filesum[17][1:0] = 0; end
 
 always @(posedge sumcomp[18] & !init) begin
   check = $fscanf (Soutdata[18], "%h", filesum[18][1:0]);
-if(sumout[18] != filesum[18]) begin
+if(sumout[18] != Acheck[18]) begin
   $display( "18 fail result ox%h  expected 0x%h", sumout[18] ,filesum[18]);
   test = 1;
 end
@@ -701,7 +704,7 @@ filesum[18][1:0] = 0; end
 
 always @(posedge sumcomp[19] & !init) begin
   check = $fscanf (Soutdata[19], "%h", filesum[19][1:0]);
-if(sumout[19] != filesum[19]) begin
+if(sumout[19] != Acheck[19]) begin
   $display( "19 fail result ox%h  expected 0x%h", sumout[19] ,filesum[19]);
   test = 1;
 end
@@ -711,7 +714,7 @@ filesum[19][1:0] = 0; end
 
 always @(posedge sumcomp[20] & !init) begin
   check = $fscanf (Soutdata[20], "%h", filesum[20][1:0]);
-if(sumout[20] != filesum[20]) begin
+if(sumout[20] != Acheck[20]) begin
   $display( "20 fail result ox%h  expected 0x%h", sumout[20] ,filesum[20]);
   test = 1;
 end
@@ -721,7 +724,7 @@ filesum[20][1:0] = 0; end
 
 always @(posedge sumcomp[21] & !init) begin
   check = $fscanf (Soutdata[21], "%h", filesum[21][1:0]);
-if(sumout[21] != filesum[21]) begin
+if(sumout[21] != Acheck[21]) begin
   $display( "21 fail result ox%h  expected 0x%h", sumout[21] ,filesum[21]);
   test = 1;
 end
@@ -731,7 +734,7 @@ filesum[21][1:0] = 0; end
 
 always @(posedge sumcomp[22] & !init) begin
   check = $fscanf (Soutdata[22], "%h", filesum[22][1:0]);
-if(sumout[22] != filesum[22]) begin
+if(sumout[22] != Acheck[22]) begin
   $display( "22 fail result ox%h  expected 0x%h", sumout[22] ,filesum[22]);
   test = 1;
 end
@@ -741,7 +744,7 @@ filesum[22][1:0] = 0; end
 
 always @(posedge sumcomp[23] & !init) begin
   check = $fscanf (Soutdata[23], "%h", filesum[23][1:0]);
-if(sumout[23] != filesum[23]) begin
+if(sumout[23] != Acheck[23]) begin
   $display( "23 fail result ox%h  expected 0x%h", sumout[23] ,filesum[23]);
   test = 1;
 end
@@ -751,7 +754,7 @@ filesum[23][1:0] = 0; end
 
 always @(posedge sumcomp[24] & !init) begin
   check = $fscanf (Soutdata[24], "%h", filesum[24][1:0]);
-if(sumout[24] != filesum[24]) begin
+if(sumout[24] != Acheck[24]) begin
   $display( "24 fail result ox%h  expected 0x%h", sumout[24] ,filesum[24]);
   test = 1;
 end
@@ -761,7 +764,7 @@ filesum[24][1:0] = 0; end
 
 always @(posedge sumcomp[25] & !init) begin
   check = $fscanf (Soutdata[25], "%h", filesum[25][1:0]);
-if(sumout[25] != filesum[25]) begin
+if(sumout[25] != Acheck[25]) begin
   $display( "25 fail result ox%h  expected 0x%h", sumout[25] ,filesum[25]);
   test = 1;
 end
@@ -771,7 +774,7 @@ filesum[25][1:0] = 0; end
 
 always @(posedge sumcomp[26] & !init) begin
   check = $fscanf (Soutdata[26], "%h", filesum[26][1:0]);
-if(sumout[26] != filesum[26]) begin
+if(sumout[26] != Acheck[26]) begin
   $display( "26 fail result ox%h  expected 0x%h", sumout[26] ,filesum[26]);
   test = 1;
 end
@@ -781,7 +784,7 @@ filesum[26][1:0] = 0; end
 
 always @(posedge sumcomp[27] & !init) begin
   check = $fscanf (Soutdata[27], "%h", filesum[27][1:0]);
-if(sumout[27] != filesum[27]) begin
+if(sumout[27] != Acheck[27]) begin
   $display( "27 fail result ox%h  expected 0x%h", sumout[27] ,filesum[27]);
   test = 1;
 end
@@ -791,7 +794,7 @@ filesum[27][1:0] = 0; end
 
 always @(posedge sumcomp[28] & !init) begin
   check = $fscanf (Soutdata[28], "%h", filesum[28][1:0]);
-if(sumout[28] != filesum[28]) begin
+if(sumout[28] != Acheck[28]) begin
   $display( "28 fail result ox%h  expected 0x%h", sumout[28] ,filesum[28]);
   test = 1;
 end
@@ -801,7 +804,7 @@ filesum[28][1:0] = 0; end
 
 always @(posedge sumcomp[29] & !init) begin
   check = $fscanf (Soutdata[29], "%h", filesum[29][1:0]);
-if(sumout[29] != filesum[29]) begin
+if(sumout[29] != Acheck[29]) begin
   $display( "29 fail result ox%h  expected 0x%h", sumout[29] ,filesum[29]);
   test = 1;
 end
@@ -811,7 +814,7 @@ filesum[29][1:0] = 0; end
 
 always @(posedge sumcomp[30] & !init) begin
   check = $fscanf (Soutdata[30], "%h", filesum[30][1:0]);
-if(sumout[30] != filesum[30]) begin
+if(sumout[30] != Acheck[30]) begin
   $display( "30 fail result ox%h  expected 0x%h", sumout[30] ,filesum[30]);
   test = 1;
 end
@@ -821,7 +824,7 @@ filesum[30][1:0] = 0; end
 
 always @(posedge sumcomp[31] & !init) begin
   check = $fscanf (Soutdata[31], "%h", filesum[31][1:0]);
-if(sumout[31] != filesum[31]) begin
+if(sumout[31] != Acheck[31]) begin
   $display( "31 fail result ox%h  expected 0x%h", sumout[31] ,filesum[31]);
   test = 1;
 end
@@ -835,5 +838,4 @@ always @(checklast == 0) begin
 else begin
 	$display( "fail"); end
 end
-*/
 endmodule

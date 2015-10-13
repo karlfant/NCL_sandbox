@@ -425,7 +425,7 @@ assign carry[0][1] = 1'b0; // auto produce carryin
 
 //  add
 for (i=0; i<32; i=i+1) begin
-  fulladdA ci (sum[i][1:0], sumcarrycompin[i], carry[i+1][1:0], Ain[i][1:0], Bin[i][1:0], carry[i][1:0], sumcarrycompout[i], init);
+  fulladdA ci (sum[i][1:0], sumcomp[i], carry[i+1][1:0], carryCOMP[i+1], Ain[i][1:0], Bin[i][1:0], sumcarrycompout[i], carry[i][1:0], carryCOMP[i], init);
 end
 
 ///// Circuit Under Test
@@ -434,19 +434,20 @@ end
 
 wire [63:0] displaysum;
 wire carrycomp;
-wire [32:0] sumcomp;
-wire [31:0] sumcarrycompin, sumcarrycompout, sumcarrycomptest, Oenable;
+wire [31:0] sumcomp;
+wire [32:0] carryCOMP;
+wire [31:0] sumcarrycompout, sumcarrycomptest, Oenable;
 wire [1:0] sumout [31:0];
 //build output buffer close with input buffer
 
 for (i=0; i<32; i=i+1) begin
-THnotN  tbb4(Oenable[i], sumcarrycompin[i], init);
+THnotN  tbb4(Oenable[i], sumcomp[i], init);
 TH22  ob0 (sumout[i][0], sum[i][0], Oenable[i]);
 TH22  ob1 (sumout[i][1], sum[i][1], Oenable[i]);
 TH12 u3 (sumcomp[i], sumout[i][1], sumout[i][0]);  // auto consume sum
-TH22 u4 (sumcarrycompin[i], sumcomp[i], sumcomp[i+1]);  // ha closure
+//TH22 u4 (sumcarrycompin[i], sumcomp[i], sumcomp[i+1]);  // ha closure
 end
-TH12 u3 (sumcomp[32], carry[32][0], carry[32][1]);  // auto consume sum
+TH12 u3 (carryCOMP[32], carry[32][0], carry[32][1]);  // auto consume sum
 
    for (i=0; i<32; i=i+1) begin
 assign displaysum[2*i+1] = sumout[i][1];

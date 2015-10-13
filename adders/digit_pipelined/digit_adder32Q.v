@@ -428,26 +428,27 @@ end
 ///// Circuit Under Test
 
 //wire [3:0] sumQ [15:0];
+wire [15:0] sumcompQ;
 wire [1:0] carry [16:0];
-wire [16:0] sumcarryCOMP;
+wire [15:0] sumcarryCOMP;
+wire [16:0] carryCOMP;
 wire [15:0] ABCOMP;
 
 // 32 bit ripple carry adder
-THnotN  u0(carry[0][0], sumcarryCOMP[0], init); // auto produce carryin
+THnotN  u0(carry[0][0], carryCOMP[0], init); // auto produce carryin
 assign carry[0][1] = 1'b0; // auto produce carryin
 
 // bits 0 through 31 add
 for (i=0; i<16; i=i+1) begin
-  fulladdQ ci (sumQ[i][3:0], sumcarrycompin[i], carry[i+1][1:0], AQin[i][3:0], BQin[i][3:0], carry[i][1:0], sumcarryCOMP[i], init);
+  fulladdQ ci (sumQ[i][3:0], sumcompQ[i], carry[i+1][1:0], carryCOMP[i+1], AQin[i][3:0], BQin[i][3:0], sumcarryCOMP[i], carry[i][1:0], carryCOMP[i], init);
 end
-TH12 u18 (sumcarryCOMP[16], carry[16][1], carry[16][0]);  // auto consume carrry
+TH12 u18 (carryCOMP[16], carry[16][1], carry[16][0]);  // auto consume carrry
 
 ///// Circuit Under Test
 //////////////////////////////
 ////// test bench output
 
 //wire carrycomp;
-wire [16:0] sumcompQ;
 wire [31:0] sumcomp;
 wire [15:0] testenable, sumcarrycompin;
 wire [1:0] sumout [31:0];
@@ -460,12 +461,12 @@ TH23W2  ob1 (sumout[2*i][1], sumQ[i][1], sumQ[i][3], testenable[i]);
 TH23W2  ob2 (sumout[2*i+1][0], sumQ[i][0], sumQ[i][1], testenable[i]);
 TH23W2  ob3 (sumout[2*i+1][1], sumQ[i][2], sumQ[i][3], testenable[i]);
 TH14 u3 (sumcompQ[i], sumout[2*i][1], sumout[2*i][0], sumout[2*i+1][1], sumout[2*i+1][0]);  // auto consume sum
-TH22 u4 (sumcarrycompin[i], sumcompQ[i], sumcompQ[i+1]);  // ha closure
+//TH22 u4 (sumcarrycompin[i], sumcompQ[i], sumcompQ[i+1]);  // ha closure
 assign sumcomp[2*i] = sumcompQ[i];
 assign sumcomp[2*i+1] = sumcompQ[i];
 //assign sumcarryCOMP[i] = sumcompQ[i];
 end
-TH12 u5 (sumcompQ[16], carry[16][0], carry[16][1]);  // auto consume sum
+TH12 u5 (carryCOMP[16], carry[16][0], carry[16][1]);  // auto consume sum
 
 wire [63:0] displaysum;
 for (i=0; i<32; i=i+1) begin

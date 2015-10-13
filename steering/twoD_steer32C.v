@@ -434,11 +434,7 @@ for (i=0; i<32; i=i+1) begin
 end
 TH14 u19 (steerCOMP[32], steer[32][1], steer[32][0], steer[32][2], steer[32][3]);  // auto consume carrry
 
-///// Circuit Under Test
-//////////////////////////////
-////// test bench output
 
-//wire carrycomp;
 wire [31:0] Scomp;
 wire [31:0] Senable;
 wire [1:0] Sout [31:0];
@@ -450,7 +446,6 @@ TH22  ob1 (Sout[i][1], Sm[i][1], Senable[i]);
 TH12 u3 (Scomp[i], Sout[i][1], Sout[i][0]);  // auto consume sum
 end
 
-//wire carrycomp;
 wire [31:0] Tcomp;
 wire [31:0] Tenable;
 wire [1:0] Tout [31:0];
@@ -462,7 +457,6 @@ TH22  ob1 (Tout[i][1], Tm[i][1], Tenable[i]);
 TH12 u3 (Tcomp[i], Tout[i][1], Tout[i][0]);  // auto consume sum
 end
 
-//wire carrycomp;
 wire [31:0] Ucomp;
 wire [31:0] Uenable;
 wire [1:0] Uout [31:0];
@@ -474,7 +468,6 @@ TH22  ob1 (Uout[i][1], Um[i][1], Uenable[i]);
 TH12 u3 (Ucomp[i], Uout[i][1], Uout[i][0]);  // auto consume sum
 end
 
-//wire carrycomp;
 wire [31:0] Vcomp;
 wire [31:0] Venable;
 wire [1:0] Vout [31:0];
@@ -485,6 +478,10 @@ TH22  ob0 (Vout[i][0], Vm[i][0], Venable[i]);
 TH22  ob1 (Vout[i][1], Vm[i][1], Venable[i]);
 TH12 u3 (Vcomp[i], Vout[i][1], Vout[i][0]);  // auto consume sum
 end
+
+///// Circuit Under Test
+//////////////////////////////
+////// test bench output
 
 wire [31:0] sumcomp;
 wire [31:0] testenable;

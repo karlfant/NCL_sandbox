@@ -47,7 +47,7 @@ end
 
 // test bench iterface  The first file record is read during init
 // the resulting wavefront has to be blocked during init and then enabled when init goes low
-wire Aenable, Benable;
+wire Aenable, Benable, steerDONE;
 wire [31:0] Acomp, Bcomp;
 
 //build A input buffer close with file read
@@ -119,6 +119,7 @@ end
 //////////////////////////////
 ////// test bench output
 
+wire AND440, AND441, AND442, AND443, AND444, AND445, AND446, AND447, ANDCOMP45, ANDCOMP46, FULLSCOMP;
 wire [31:0] Scomp;
 wire [31:0] Senable;
 wire [1:0] Sout [31:0];
@@ -129,7 +130,6 @@ TH22  ob40 (Sout[i][0], Sm[i][0], Senable[i]);
 TH22  ob41 (Sout[i][1], Sm[i][1], Senable[i]);
 TH12 u43 (Scomp[i], Sout[i][1], Sout[i][0]);  // auto consume sum
 end
-wire AND440, AND441, AND442, AND443, AND444, AND445, AND446, AND447, ANDCOMP45, ANDCOMP46, FULLSCOMP;
 TH44 cl440 (AND400, Scomp[0], Scomp[1], Scomp[2], Scomp[3]); 
 TH44 cl441 (AND410, Scomp[4], Scomp[5], Scomp[6], Scomp[7]); 
 TH44 cl442 (AND420, Scomp[8], Scomp[9], Scomp[10], Scomp[11]); 
@@ -142,6 +142,7 @@ TH44 cl448 (ANDCOMP45, AND400, AND410, AND420, AND430);
 TH44 cl449 (ANDCOMP46, AND440, AND450, AND460, AND470); 
 TH22 cl450 (FULLSCOMP, ANDCOMP45, ANDCOMP46); 
 
+wire AND540, AND541, AND542, AND543, AND544, AND545, AND546, AND547, ANDCOMP55, ANDCOMP56, FULLTCOMP;
 wire [31:0] Tcomp;
 wire [31:0] Tenable;
 wire [1:0] Tout [31:0];
@@ -152,7 +153,6 @@ TH22  ob50 (Tout[i][0], Tm[i][0], Tenable[i]);
 TH22  ob51 (Tout[i][1], Tm[i][1], Tenable[i]);
 TH12 u53 (Tcomp[i], Tout[i][1], Tout[i][0]);  // auto consume sum
 end
-wire AND540, AND541, AND542, AND543, AND544, AND545, AND546, AND547, ANDCOMP55, ANDCOMP56, FULLTCOMP;
 TH44 cl540 (AND500, Tcomp[0], Tcomp[1], Tcomp[2], Tcomp[3]); 
 TH44 cl541 (AND510, Tcomp[4], Tcomp[5], Tcomp[6], Tcomp[7]); 
 TH44 cl542 (AND520, Tcomp[8], Tcomp[9], Tcomp[10], Tcomp[11]); 
@@ -165,6 +165,7 @@ TH44 cl548 (ANDCOMP55, AND500, AND510, AND520, AND530);
 TH44 cl549 (ANDCOMP56, AND540, AND550, AND560, AND570); 
 TH22 cl550 (FULLTCOMP, ANDCOMP55, ANDCOMP56); 
 
+wire AND640, AND641, AND642, AND643, AND644, AND645, AND646, AND647, ANDCOMP65, ANDCOMP66, FULLUCOMP;
 wire [31:0] Ucomp;
 wire [31:0] Uenable;
 wire [1:0] Uout [31:0];
@@ -175,7 +176,6 @@ TH22  ob60 (Uout[i][0], Um[i][0], Uenable[i]);
 TH22  ob61 (Uout[i][1], Um[i][1], Uenable[i]);
 TH12 u63 (Ucomp[i], Uout[i][1], Uout[i][0]);  // auto consume sum
 end
-wire AND640, AND641, AND642, AND643, AND644, AND645, AND646, AND647, ANDCOMP65, ANDCOMP66, FULLUCOMP;
 TH44 cl640 (AND600, Ucomp[0], Ucomp[1], Ucomp[2], Ucomp[3]); 
 TH44 cl641 (AND610, Ucomp[4], Ucomp[5], Ucomp[6], Ucomp[7]); 
 TH44 cl642 (AND620, Ucomp[8], Ucomp[9], Ucomp[10], Ucomp[11]); 
@@ -188,6 +188,7 @@ TH44 cl648 (ANDCOMP65, AND600, AND610, AND620, AND630);
 TH44 cl649 (ANDCOMP66, AND640, AND650, AND660, AND670); 
 TH22 cl650 (FULLUCOMP, ANDCOMP65, ANDCOMP66); 
 
+wire AND740, AND741, AND742, AND743, AND744, AND745, AND746, AND747, ANDCOMP75, ANDCOMP76, FULLVCOMP;
 wire [31:0] Vcomp;
 wire [31:0] Venable;
 wire [1:0] Vout [31:0];
@@ -198,7 +199,6 @@ TH22  ob70 (Vout[i][0], Vm[i][0], Venable[i]);
 TH22  ob71 (Vout[i][1], Vm[i][1], Venable[i]);
 TH12 u73 (Vcomp[i], Vout[i][1], Vout[i][0]);  // auto consume sum
 end
-wire AND740, AND741, AND742, AND743, AND744, AND745, AND746, AND747, ANDCOMP75, ANDCOMP76, FULLVCOMP;
 TH44 cl740 (AND700, Vcomp[0], Vcomp[1], Vcomp[2], Vcomp[3]); 
 TH44 cl741 (AND710, Vcomp[4], Vcomp[5], Vcomp[6], Vcomp[7]); 
 TH44 cl742 (AND720, Vcomp[8], Vcomp[9], Vcomp[10], Vcomp[11]); 
@@ -231,7 +231,7 @@ TH12 u3 (sumcomp[i], displaysum[2*i], displaysum[2*i+1]);  // auto consume sum
 end
 
 // completeness tree
-wire AND40, AND41, AND42, AND43, AND44, AND45, AND46, AND47, ANDCOMP5, ANDCOMP6, ANDCOMP7, steerDONE;
+wire AND40, AND41, AND42, AND43, AND44, AND45, AND46, AND47, ANDCOMP5, ANDCOMP6, ANDCOMP7;
 TH44 cl40 (AND40, sumcomp[0], sumcomp[1], sumcomp[2], sumcomp[3]); 
 TH44 cl41 (AND41, sumcomp[4], sumcomp[5], sumcomp[6], sumcomp[7]); 
 TH44 cl42 (AND42, sumcomp[8], sumcomp[9], sumcomp[10], sumcomp[11]); 
@@ -247,10 +247,10 @@ TH22 cl50 (ANDCOMP7, ANDCOMP5, ANDCOMP6);
 always @(posedge ANDCOMP7 & !init) begin
   check = $fscanf (sumdata, "%h", fileC);
 if(displaysum == Acheck) begin
-  $display( "pass result ox%h  expected 0x%h", displaysum ,fileC);
+  $display( "pass result ox%h  expected 0x%h", displaysum , Acheck);
 end
 else begin
-  $display( "fail result ox%h  expected 0x%h", displaysum ,fileC);
+  $display( "fail result ox%h  expected 0x%h", displaysum , Acheck);
 end
 end
 
