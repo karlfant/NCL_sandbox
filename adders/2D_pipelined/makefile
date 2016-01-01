@@ -7,6 +7,11 @@ addA:  twoD_adder32A.v fulladdA.v
 	$(TOOL) -o twoD_adder32A $(NCLLIB) fulladdA.v twoD_adder32A.v
 	$(SIM) twoD_adder32A
 
+# Two D pipelined 32 bit adder with full adder A
+addAB:  twoD_adder32AB.v fulladdAB.v
+	$(TOOL) -o twoD_adder32AB $(NCLLIB) fulladdAB.v twoD_adder32AB.v
+	$(SIM) twoD_adder32AB
+
 # Two D pipelined 32 bit adder with full adder B
 addB:  twoD_adder32B.v fulladdB.v
 	$(TOOL) -o twoD_adder32B $(NCLLIB) fulladdB.v twoD_adder32B.v

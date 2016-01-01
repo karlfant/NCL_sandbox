@@ -7,6 +7,11 @@ addA:  fullword_adder32A.v fulladdA.v
 	$(TOOL) -o fullword_adder32A $(NCLLIB) fulladdA.v fullword_adder32A.v
 	$(SIM) fullword_adder32A
 
+# full word pipelined 32 bit adder with fulladd.A
+addAB:  fullword_adder32AB.v fulladdAB.v
+	$(TOOL) -o fullword_adder32AB $(NCLLIB) fulladdAB.v fullword_adder32AB.v
+	$(SIM) fullword_adder32AB
+
 # full word pipelined 32 bit adder with fulladd.B
 addB:  fullword_adder32A.v fulladdA.v
 	$(TOOL) -o fullword_adder32B $(NCLLIB) fulladdB.v fullword_adder32B.v

@@ -48,7 +48,7 @@ end
 // test bench iterface  The first file record is read during init
 // the resulting wavefront has to be blocked during init and then enabled when init goes low
 wire Aenable, Benable;
-wire [31:0] Acomp, Bcomp;
+wire [31:0] Acomp, Bcomp, sumcarrycomp;
 
 //build A input buffer close with file read
 THnotN  tbb3(Aenable, sumcarrycomp, init);
@@ -129,7 +129,7 @@ TH12 u3 (sumcomp[i], displaysum[2*i], displaysum[2*i+1]);  // auto consume sum
 end
 
 // completeness tree
-wire AND40, AND41, AND42, AND43, AND44, AND45, AND46, AND47, ANDCOMP5, ANDCOMP6, ANDCOMP7, sumcarrycomp;
+wire AND40, AND41, AND42, AND43, AND44, AND45, AND46, AND47, ANDCOMP5, ANDCOMP6, ANDCOMP7;
 TH44 cl40 (AND40, sumcomp[0], sumcomp[1], sumcomp[2], sumcomp[3]); 
 TH44 cl41 (AND41, sumcomp[4], sumcomp[5], sumcomp[6], sumcomp[7]); 
 TH44 cl42 (AND42, sumcomp[8], sumcomp[9], sumcomp[10], sumcomp[11]); 
