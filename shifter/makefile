@@ -1,7 +1,7 @@
 TOOL=iverilog
 SIM=VVP -n
-NCLLIB=../NCL_LIB.v
-# NCLLIB=../NCL_LIB_unity.v
+NCLLIB=../common/NCL_LIB.v
+# NCLLIB=../common/NCL_LIB_unity.v
 
 # full word completeness closes with the shift bits
 # digit completeness closes for the data
