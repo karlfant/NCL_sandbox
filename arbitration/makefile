@@ -10,7 +10,7 @@ countarbA:  countarbA.v shiftcount4H.v
 	$(SIM) countarbA
 
 # Arbiter study with free to dual component containing arbiter
-countarbD:  countarbD.v updncount.v
+countarbD:  countarbD.v updncount.v $(NCLLIB)
 	$(TOOL) -o countarbD $(NCLLIB) updncount.v countarbD.v
 	$(SIM) countarbD
 

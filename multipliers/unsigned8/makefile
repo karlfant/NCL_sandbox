@@ -1,7 +1,7 @@
 TOOL=iverilog
 SIM=VVP -n
-NCLLIB=../../common/NCL_LIB.v
-# NCLLIB=../../common/	NCL_LIB_unity.v
+# NCLLIB=../../common/NCL_LIB.v
+NCLLIB=../../common/NCL_LIB_unity.v
 
 # Two D pipelined 8 bit multiplier array
 mul8U3:  twoD_mult8U3.v dualbuf.v pprodA.v

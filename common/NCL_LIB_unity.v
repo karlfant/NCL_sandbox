@@ -1584,6 +1584,34 @@ endtable
 endprimitive
 
 /////////////////////// 
+//// TH22400 NCL-UDP
+//// 3. Z = AB       LDD notation
+//// [A, B] -> Z     flow notation
+/////////////////////// 
+module TH22400(Z,A,B);
+output Z;
+input A,B;
+   TH22400P #400 (Z,A,B);
+endmodule
+primitive TH22400P(Z,A,B);
+output Z;
+input A, B;
+reg Z;
+initial Z = 1'b0;
+table
+// A B : Z : Z+         
+0  0 : ? : 0;
+0  1 : 0 : 0;
+1  0 : 0 : 0;
+1  1 : 0 : 1;
+0  0 : ? : 0;
+0  1 : 1 : 1;
+1  0 : 1 : 1;
+1  1 : 1 : 1;
+endtable
+endprimitive
+
+/////////////////////// 
 //// TH12 NCL-UDP
 //// 2. Z = A + B    LDD notation
 //// {A, B} -> Z     flow notation

@@ -32,8 +32,8 @@ module twoD_mult8U4;
 genvar i, j, m, n;
  initial 
 begin
-     # 2000 init = 0;
-     # 200000 $stop;
+     # 10000 init = 0;
+     # 400000 $stop;
   end
 initial
 begin
