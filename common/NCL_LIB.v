@@ -1681,7 +1681,7 @@ wire A1, A2;
 endmodule
 
 module arbiter(output G1, output G2, input R1, input R2, output R, input G, init);
-wire G, M1, M2, NG1, NG2, P1, P2;
+wire M1, M2, NG1, NG2, P1, P2;
 
 //Arbiter from LDD
 MUTEX  m0( M1, M2, R1, R2);
