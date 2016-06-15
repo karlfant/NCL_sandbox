@@ -7,7 +7,7 @@
 
 `timescale 1ps / 1ps
 
-module countarbD;
+module arbD;
 
  /* Make an init that pulses once. */
   reg init = 1;
@@ -18,8 +18,8 @@ module countarbD;
   end
 initial
  begin
-    $dumpfile("countarbD.vcd");
-    $dumpvars(0, countarbD);
+    $dumpfile("arbD.vcd");
+    $dumpvars(0, arbD);
     checklast = 1;
  end
 
@@ -417,23 +417,21 @@ end
 //////////////////////////////
 ///// Circuit Under Test
 
-wire countupR, countdnR, countupS, countdnS, countup, countupCOMP, countupSCOMP, countdn, countdnCOMP, countdnSCOMP, countCOMP;
-wire countupenable, countdnenable;
-wire [1:0] count;
+wire R1, R0, R1COMP, R0COMP, outCOMP;
+wire [1:0] out;
 
-assign countupS = Bin[6][0];
-assign countdnS = Bin[5][0];
+// bit streams 5 and 6 of the input B vector are usde as input to the arbiter
+assign R1 = Bin[6][0];
+assign R0 = Bin[5][0];
 
-TH12 Z72 (BinCOMP[6], countupSCOMP, Bin[6][1]); // count up for a 1 entering the pipeline
-TH12 Z73 (BinCOMP[5], countdnSCOMP, Bin[5][1]); // count down for a 1 exiting bit 15
+// bits - 1 are skipped and only bits = 0 are presented to the arbiter. This jitters the presentation of input to the arbiter. 
+TH12 Z72 (BinCOMP[6], R1COMP, Bin[6][1]); 
+TH12 Z73 (BinCOMP[5], R0COMP, Bin[5][1]); 
 
-freetodual M0 (count, countCOMP, countdnS, countdnSCOMP, countupS, countupSCOMP, init);
+// an arbiter that creates a dual rail flow from the presented input singnals.
+freetodual M0 (out, outCOMP, R0, R0COMP, R1, R1COMP, init);
 
-assign countdn = count[1];
-assign countup = count[0];
-TH12 z29 (countCOMP, countdnCOMP, countupCOMP);
-
-updncount cnt0(countup, countupCOMP, countdn, countdnCOMP, init);
+TH12 Z74 (outCOMP, out[1], out[0]); // autoconsume out 
 
 ///// Circuit Under Test
 //////////////////////////////

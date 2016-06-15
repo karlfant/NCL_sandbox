@@ -12,16 +12,6 @@ module twoD_adder32A1;
  /* Make an init that pulses once. */
   reg init = 1;
   reg test = 0;
-  initial begin
-     # 10000 init = 0;
-     # 200000 $stop;
-  end
-initial
- begin
-    $dumpfile("twoD_adder32A1.vcd");
-    $dumpvars(0, twoD_adder32A1);
-    checklast = 1;
- end
 
 integer Aindata[31:0], Bindata[31:0], Soutdata[31:0];
 integer check, checklast;
@@ -32,7 +22,20 @@ reg [1:0] fileB [31:0];
 reg [1:0] filesum [31:0];
 genvar i;
 
-wire [31:0] Afilecomp, Bfilecomp;
+//wire [31:0] Afilecomp, Bfilecomp;
+
+  initial begin
+     # 10000 init = 0;
+     # 200000 $stop;
+  end
+initial
+ begin
+    $dumpfile("twoD_adder32A1.vcd");
+    $dumpvars(0, twoD_adder32A1);
+    checklast = 1;
+    check = 0;
+ end
+
 initial begin
   Aindata[0] = $fopen ("A0.dual", "r+");
   Aindata[1] = $fopen ("A1.dual", "r+");
@@ -131,7 +134,7 @@ initial begin
   Soutdata[30] = $fopen ("sum30.dual", "r+");
   Soutdata[31] = $fopen ("sum31.dual", "r+");
 end
-
+wire [31:0] Acomp, Bcomp;
 always @(negedge Acomp[0] & !init) begin
   check = $fscanf (Aindata[0], "%h", fileA[0][1:0]); end
 always @(posedge Acomp[0] & !init) begin
@@ -393,7 +396,7 @@ fileB[31][1:0] = 0; end
 // test bench iterface  The first file record is read during init
 // the resulting wavefront has to be blocked during init and then enabled when init goes low
 wire [31:0] Aenable, Benable;
-wire [31:0] Acomp, Bcomp;
+wire [32:0] sumcarryCOMP;
 
 //build A input buffer close with file read
 for (i=0; i<32; i=i+1) begin
@@ -417,8 +420,8 @@ end
 
 wire [1:0] sum [31:0];
 wire [1:0] carry [32:0];
-wire [32:0] sumcarryCOMP;
 
+wire [31:0] sumcomp;
 // 32 bit ripple carry adder
 THnotN  u0(carry[0][0], sumcarryCOMP[0], init); // auto produce carryin
 assign carry[0][1] = 1'b0; // auto produce carryin
@@ -434,7 +437,7 @@ TH12 u18 (sumcarryCOMP[32], carry[32][1], carry[32][0]);  // auto consume carrry
 ////// test bench output
 
 //wire carrycomp;
-wire [31:0] sumcomp;
+
 wire [31:0] testenable;
 wire [1:0] sumout [31:0];
 //build output buffer close with input buffer

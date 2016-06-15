@@ -1,9 +1,9 @@
-module freedualtodual(output [1:0] dualC, input dualCCOMP, input [1:0] dualA, output dualACOMP, input [1:0] dualB, output dualBCOMP, input init);
+module freedualtodual(output [1:0] outfinal, input outfinalCOMP, input [1:0] dualA, output dualACOMP, input [1:0] dualB, output dualBCOMP, input init);
 
-wire M4, M5, P4, P5, inR4, inR5, dualABCOMP, dual4, dual5, dualCenable;
+wire M4, M5, P4, P5, inR4, inR5, dualABCOMP, dual4, dual5, outfinalenable;
 wire [1:0] dualD, inA, inB;
 
-// Arbitrate dualA and dualB to single dualC flow
+// Arbitrate dualA and dualB to single outfinal flow
 
 TH12 n13 (inR4, dualA[0], dualA[1]);
 TH12 m13 (inR5, dualB[0], dualB[1]);
@@ -26,9 +26,9 @@ TH22 k34 (inB[1], P5, dualB[1]);
 TH12 k17 (dualD[0], inA[0], inB[0]);
 TH12 k18 (dualD[1], inA[1], inB[1]);
 
-THnotN k30 (dualCenable, dualCCOMP, init);
-TH22 k11 (dualC[0], dualD[0], dualCenable);
-TH22 k12 (dualC[1], dualD[1], dualCenable);
-TH12 k15 (dualABCOMP, dualC[0], dualC[1]);
+THnotN k30 (outfinalenable, outfinalCOMP, init);
+TH22 k11 (outfinal[0], dualD[0], outfinalenable);
+TH22 k12 (outfinal[1], dualD[1], outfinalenable);
+TH12 k15 (dualABCOMP, outfinal[0], outfinal[1]);
 
 endmodule

@@ -7,7 +7,7 @@
 
 `timescale 1ps / 1ps
 
-module countnoarbD;
+module arbQ;
 
  /* Make an init that pulses once. */
   reg init = 1;
@@ -18,8 +18,8 @@ module countnoarbD;
   end
 initial
  begin
-    $dumpfile("countnoarbD.vcd");
-    $dumpvars(0, countnoarbD);
+    $dumpfile("arbQ.vcd");
+    $dumpvars(0, arbQ);
     checklast = 1;
  end
 
@@ -417,26 +417,26 @@ end
 //////////////////////////////
 ///// Circuit Under Test
 
-wire countupR, countdnR, countupS, countdnS, countup, countupCOMP, countupSCOMP, countdn, countdnCOMP, countdnSCOMP, countCOMP;
-wire countupenable, countdnenable;
-wire [1:0] count;
+wire R0, R1, R2, R3, R0COMP, R1COMP, R2COMP, R3COMP, quadCOMP;
+wire [3:0] quad;
 
-assign countup = Bin[6][0];
-assign countdn = Bin[5][0];
+assign R0 = Bin[3][0];
+assign R1 = Bin[2][0];
+assign R2 = Bin[1][0];
+assign R3 = Bin[0][0];
 
-TH12 Z72 (BinCOMP[6], countupCOMP, Bin[6][1]); // count up for a 1 entering the pipeline
-TH12 Z73 (BinCOMP[5], countdnCOMP, Bin[5][1]); // count down for a 1 exiting bit 15
+TH12 Z72 (BinCOMP[3], R0COMP, Bin[3][1]); // get input and skip 1s
+TH12 Z73 (BinCOMP[2], R1COMP, Bin[2][1]); 
+TH12 Z74 (BinCOMP[1], R2COMP, Bin[1][1]); 
+TH12 Z75 (BinCOMP[0], R3COMP, Bin[0][1]); 
 
-//freetodual M0 (count, countCOMP, countdnS, countdnSCOMP, countupS, countupSCOMP, init);
+freetoquad M0 (quad, quadCOMP, R0, R0COMP, R1, R1COMP, R2, R2COMP, R3, R3COMP, init);
 
-//assign countdn = count[1];
-//assign countup = count[0];
-//TH12 z29 (countCOMP, countdnCOMP, countupCOMP);
+TH14 z29 (quadCOMP, quad[0], quad[1], quad[2], quad[3]);
 
-updncount cnt0(countup, countupCOMP, countdn, countdnCOMP, init);
 
 ///// Circuit Under Test
-//////////////////////////////
+///////////////////////////////
 ////// test bench output
 /*
 wire [31:0] sumcomp;

@@ -7,7 +7,7 @@
 
 `timescale 1ps / 1ps
 
-module countarbDD;
+module arbT;
 
  /* Make an init that pulses once. */
   reg init = 1;
@@ -18,8 +18,8 @@ module countarbDD;
   end
 initial
  begin
-    $dumpfile("countarbDD.vcd");
-    $dumpvars(0, countarbDD);
+    $dumpfile("arbT.vcd");
+    $dumpvars(0, arbT);
     checklast = 1;
  end
 
@@ -417,33 +417,23 @@ end
 //////////////////////////////
 ///// Circuit Under Test
 
-wire countupR, countdnR, count0S, count1S, count2S, count3S, countup, countupCOMP, countACOMP, countBCOMP, countdn, countdnCOMP, countdnSCOMP, countCOMP;
-wire countupenable, countdnenable;
-wire [1:0] count, countA, countB;
+wire R0, R1, R2, R0COMP, R1COMP, R2COMP, trinaryCOMP;
+wire [2:0] trinary;
 
-assign count0S = Bin[3][0];
-assign count1S = Bin[2][0];
-assign count2S = Bin[1][0];
-assign count3S = Bin[0][0];
+assign R0 = Bin[0][0];
+assign R1 = Bin[1][0];
+assign R2 = Bin[2][0];
 
-TH12 Z72 (BinCOMP[3], count0SCOMP, Bin[3][1]); // count up for a 1 entering the pipeline
-TH12 Z73 (BinCOMP[2], count1SCOMP, Bin[2][1]); // count down for a 1 exiting bit 15
-TH12 Z74 (BinCOMP[1], count2SCOMP, Bin[1][1]); // count up for a 1 entering the pipeline
-TH12 Z75 (BinCOMP[0], count3SCOMP, Bin[0][1]); // count down for a 1 exiting bit 15
+TH12 Z72 (BinCOMP[0], R0COMP, Bin[0][1]); // close input and skip 1s
+TH12 Z73 (BinCOMP[1], R1COMP, Bin[1][1]); 
+TH12 Z74 (BinCOMP[2], R2COMP, Bin[2][1]);
 
-freetodual M0 (countA, countACOMP, count0S, count0SCOMP, count1S, count1SCOMP, init);
-freetodual M1 (countB, countBCOMP, count2S, count2SCOMP, count3S, count3SCOMP, init);
+freetotrinary M0 (trinary, trinaryCOMP, R0, R0COMP, R1, R1COMP, R2, R2COMP, init);
 
-freedualtodual M3 (count, countCOMP, countA, countACOMP, countB, countBCOMP, init);
-
-TH11 z0 ( countdn, count[0]);
-TH11 z1 ( countup, count[1]);
-TH12 z29 (countCOMP, countdnCOMP, countupCOMP);
-
-updncount cnt0(countup, countupCOMP, countdn, countdnCOMP, init);
+TH13 z29 (trinaryCOMP, trinary[0], trinary[1], trinary[2]);
 
 ///// Circuit Under Test
-///////////////////////////////
+////////////////////////////////
 ////// test bench output
 /*
 wire [31:0] sumcomp;

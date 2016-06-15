@@ -7,7 +7,7 @@
 
 `timescale 1ps / 1ps
 
-module countarbQ;
+module ArbDD;
 
  /* Make an init that pulses once. */
   reg init = 1;
@@ -18,8 +18,8 @@ module countarbQ;
   end
 initial
  begin
-    $dumpfile("countarbQ.vcd");
-    $dumpvars(0, countarbQ);
+    $dumpfile("ArbDD.vcd");
+    $dumpvars(0, ArbDD);
     checklast = 1;
  end
 
@@ -417,27 +417,32 @@ end
 //////////////////////////////
 ///// Circuit Under Test
 
-wire countupR, countdnR, count0S, count1S, count2S, count3S, countup, countupCOMP, count0SCOMP, count1SCOMP, count2SCOMP, count3SCOMP, countdn, countdnCOMP, countdnSCOMP, countCOMP;
-wire countupenable, countdnenable;
-wire [3:0] count;
+wire countupR, countdnR, R0, R1, R2, R3, outACOMP, outBCOMP, outfinalCOMP;
+wire R0COMP, R1COMP, R2COMP, R3COMP;
+wire [1:0] outfinal, dualA, dualB;
 
-assign count0S = Bin[3][0];
-assign count1S = Bin[2][0];
-assign count2S = Bin[1][0];
-assign count3S = Bin[0][0];
+// we use 4 independent bit streams 0,1,2 and 3 from the B input vector
+assign R0 = Bin[3][0];
+assign R1 = Bin[2][0];
+assign R2 = Bin[1][0];
+assign R3 = Bin[0][0];
 
-TH12 Z72 (BinCOMP[3], count0SCOMP, Bin[3][1]); // count up for a 1 entering the pipeline
-TH12 Z73 (BinCOMP[2], count1SCOMP, Bin[2][1]); // count down for a 1 exiting bit 15
-TH12 Z74 (BinCOMP[1], count2SCOMP, Bin[1][1]); // count up for a 1 entering the pipeline
-TH12 Z75 (BinCOMP[0], count3SCOMP, Bin[0][1]); // count down for a 1 exiting bit 15
+// we skip the 1 valued bits and only present 0 valued bits to the arbiter.
+// This jitters the presentation of inputs to the arbiter
+TH12 Z72 (BinCOMP[3], R0COMP, Bin[3][1]); // count up for a 1 entering the pipeline
+TH12 Z73 (BinCOMP[2], R1COMP, Bin[2][1]); // count down for a 1 exiting bit 15
+TH12 Z74 (BinCOMP[1], R2COMP, Bin[1][1]); // count up for a 1 entering the pipeline
+TH12 Z75 (BinCOMP[0], R3COMP, Bin[0][1]); // count down for a 1 exiting bit 15
 
-freetoquad M0 (count, countCOMP, count0S, count0SCOMP, count1S, count1SCOMP, count2S, count2SCOMP, count3S, count3SCOMP, init);
+// Arbitrate the 4 input bit streams into two dual rail streams
+freetodual M0 (dualA, dualACOMP, R0, R0COMP, R1, R1COMP, init);
+freetodual M1 (dualB, dualBCOMP, R2, R2COMP, R3, R3COMP, init);
 
-TH12 z0 ( countdn, count[0], count[3]);
-TH12 z1 ( countup, count[2], count[1]);
-TH12 z29 (countCOMP, countdnCOMP, countupCOMP);
+// Arbitrate the two dual rail streams into a single dual rail stream
+freedualtodual M3 (outfinal, outfinalCOMP, dualA, dualACOMP, dualB, dualBCOMP, init);
 
-updncount cnt0(countup, countupCOMP, countdn, countdnCOMP, init);
+TH12 z29 (outfinalCOMP, outfinal[0], outfinal[1]); // auto consume outfinal
+
 
 ///// Circuit Under Test
 ///////////////////////////////
